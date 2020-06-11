@@ -1,0 +1,66 @@
+html {
+    height: 100%;
+}
+
+html body {
+    min-width: 300px;
+    min-height: 600px;
+
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+html body .container-fluid.body-content {
+    margin-top: 32px;
+    width: 100%;
+    overflow-y: auto;
+}
+
+header {
+    background-color: #4C4;
+    min-height: 50px;
+    width: 100%;
+}
+
+.footer {
+    height: 53px;
+    width: 100%;
+}
+.page-wrapper{
+    height: 100%;
+}
+body {
+    min-width: 300px;
+    min-height: 600px;
+}
+.fa-beat {
+    animation:fa-beat 5s ease infinite;
+}
+@keyframes fa-beat {
+    0% {
+        transform:scale(1);
+    }
+    5% {
+        transform:scale(1.25);
+    }
+    20% {
+        transform:scale(1);
+    }
+    30% {
+        transform:scale(1);
+    }
+    35% {
+        transform:scale(1.25);
+    }
+    50% {
+        transform:scale(1);
+    }
+    55% {
+        transform:scale(1.25);
+    }
+    70% {
+        transform:scale(1);
+    }
+}
