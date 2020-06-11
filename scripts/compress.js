@@ -4,13 +4,13 @@ const path = require('path');
 
 /* eslint import/no-unresolved: 0 */
 const argv = require('minimist')(process.argv.slice(2));
-const name = require('../src/manifest.json').name;
+const name = require('../package.json').name;
 const version = require('../package.json').version;
 
 const keyPath = argv.key || 'key.pem';
 const existsKey = fs.existsSync(keyPath);
 const outputDir = './build';
-if (!fs.existsSync(outputDir)){
+if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
 }
 // const crx = new ChromeExtension({
@@ -22,19 +22,21 @@ if (!fs.existsSync(outputDir)){
 
 const crx = new ChromeExtension({
     codebase: 'https://podnoms.com/podnoms.crx',
-    privateKey: fs.readFileSync('./key.pem')
+    privateKey: existsKey ? fs.readFileSync(keyPath) : null
 });
+const prefix = `${outputDir}/${name}-${version}`;
+console.log('Prefix: ', prefix);
 
 crx.load(path.resolve(__dirname, '../extension'))
     .then(() => crx.loadContents())
-    .then((zip) => fs.promises.writeFile('${outputDir}/${name}.zip', zip));
+    .then((zip) => fs.promises.writeFile(`${prefix}.zip`, zip));
 
 crx.load(path.resolve(__dirname, '../extension'))
     .then(crx => crx.pack())
     .then(crxBuffer => {
         const updateXML = crx.generateUpdateXML()
-        fs.promises.writeFile('${outputDir}/update.xml', updateXML);
-        fs.promises.writeFile('${outputDir}/${name}.crx', crxBuffer);
+        fs.promises.writeFile(`${outputDir}/update.xml`, updateXML);
+        fs.promises.writeFile(`${prefix}.crx`, crxBuffer);
     })
     .catch(err => {
         console.error(err);

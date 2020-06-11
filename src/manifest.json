@@ -3,12 +3,6 @@
     "manifest_version": 2,
     "name": "Send 2 PodNoms",
     "description": "Web Extension to send audio from a web page to podnoms.com",
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["lib/js/browser-polyfill.js", "content.js"]
-        }
-    ],
     "background": {
         "scripts": ["lib/js/browser-polyfill.js", "background.js"]
     },
@@ -20,8 +14,7 @@
     "permissions": [
         "tabs",
         "storage",
-        "webRequest",
-        "*://*.podnoms.com/"
+        "webRequest"
     ],
     "icons": {
         "72": "img/icon-72x72.png",

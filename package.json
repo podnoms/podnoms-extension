@@ -10,7 +10,7 @@
     "start:views": "node scripts/start.js",
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
-    "build-store": "npm version patch && node scripts/build.js",
+    "build-store": "npm version patch && yarn run build && yarn run compress",
     "compress": "node scripts/compress",
     "compress-keygen": "crx keygen",
     "clean": "rimraf build/ dev/ dist/ extension/ *.zip *.crx",
