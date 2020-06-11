@@ -22,4 +22,4 @@ const PodcastList = (props) => {
     )
 }
 
-export default PodcastList;
+export default PodcastList
