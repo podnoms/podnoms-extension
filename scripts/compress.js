@@ -67,44 +67,41 @@ function _buildFirefox() {
     console.log('Building firefox XPI');
 //add the extra firefox schizzle onto the manifest
     fs.readFile(`${buildDir}/manifest.json`, 'utf8', (err, data) => {
-        if (err) {
-            console.log(err);
-        } else {
-            const manifestOptions = require('../config/manifest');
 
-            let obj = JSON.parse(data); //now it an object
-            obj.push(manifestOptions.firefoxManifestExtra);
-            json = JSON.stringify(obj); //convert it back to json
-            fs.writeFile(`${buildDir}/manifest.json`, json, 'utf8', () => {
-                webExt.cmd.sign({
-                    sourceDir: buildDir,
-                    artifactsDir: './build',
-                    apiKey: process.env.MOZILLA_API_KEY,
-                    apiSecret: process.env.MOZILLA_API_SECRET
-                }, {
-                    shouldExitProgram: false,
-                }).then((result) => {
-                    console.log(result);
-                    if (result['success']) {
-                        const artifact = result['downloadedFiles'][0];
-                        fs.copyFile(artifact, `${outputDir}/${base}.xpi`, (err) => {
-                            if (err) throw err;
-                            console.log(`${outputDir}/${base}.xpi was copied to destination.txt`);
-                        });
+        let obj = JSON.parse(data); //now it an object
+        obj = Object.assign(obj, manifestOptions.firefoxManifestExtra);
+        console.log(obj);
+        const json = JSON.stringify(obj); //convert it back to json
+        fs.writeFile(`${buildDir}/manifest.json`, json, 'utf8', () => {
+            webExt.cmd.sign({
+                sourceDir: buildDir,
+                artifactsDir: './build',
+                apiKey: process.env.MOZILLA_API_KEY,
+                apiSecret: process.env.MOZILLA_API_SECRET
+            }, {
+                shouldExitProgram: false,
+            }).then((result) => {
+                console.log(result);
+                if (result['success']) {
+                    const artifact = result['downloadedFiles'][0];
+                    fs.copyFile(artifact, `${outputDir}/${base}.xpi`, (err) => {
+                        if (err) throw err;
+                        console.log(`${outputDir}/${base}.xpi was copied to destination.txt`);
+                    });
 
-                        fs.copyFile(artifact, `${outputDir}/${prefix}.xpi`, (err) => {
-                            if (err) throw err;
-                            console.log(`${outputDir}/${prefix}.xpi was copied to base`);
-                        });
-                        fs.unlink(artifact, (r) => console.log('Artifact deleted'));
+                    fs.copyFile(artifact, `${outputDir}/${prefix}.xpi`, (err) => {
+                        if (err) throw err;
+                        console.log(`${outputDir}/${prefix}.xpi was copied to base`);
+                    });
+                    fs.unlink(artifact, (r) => console.log('Artifact deleted'));
 
-                        console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
-                        azure.uploadArtifacts(`${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
-                    }
-                });
-            }); // write it back
-        }
+                    console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
+                    azure.uploadArtifacts(`${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
+                }
+            });
+        });
     });
+
 }
 
 
