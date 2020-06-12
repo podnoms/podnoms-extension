@@ -12,3 +12,4 @@ key.pem
 build
 .env.local
 .idea
+mozilla-extension.zip
