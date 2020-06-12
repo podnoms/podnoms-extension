@@ -48,7 +48,7 @@ console.log('Building firefox XPI');
 webExt.cmd.sign({
     sourceDir: '/home/fergalm/dev/podnoms/podnoms-extension/build',
     apiKey: 'user:16056403:686',
-    apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748',
+    apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748'
 }, {
     // These are non CLI related options for each function.
     // You need to specify this one so that your NodeJS application
