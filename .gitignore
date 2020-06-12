@@ -15,3 +15,4 @@ key.pem
 build
 .idea
 mozilla-extension.zip
+yarn-error.log
