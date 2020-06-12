@@ -34,11 +34,13 @@ const crx = new ChromeExtension({
     codebase: 'https://podnoms.com/podnoms.crx',
     privateKey: existsKey ? fs.readFileSync(keyPath) : null
 });
-const prefix = `${outputDir}/${name}-${version}`;
+const base = `${outputDir}/${name}`;
+const prefix = `${base}-${version}`;
 console.log('Prefix: ', prefix);
 
 crx.load(path.resolve(__dirname, '../extension'))
     .then(() => crx.loadContents())
+    .then((zip) => fs.promises.writeFile(`${base}.zip`, zip))
     .then((zip) => fs.promises.writeFile(`${prefix}.zip`, zip))
     .then((file) => azure.uploadArtifacts(`${prefix}.zip`));
 
@@ -47,9 +49,10 @@ crx.load(path.resolve(__dirname, '../extension'))
     .then(crxBuffer => {
         const updateXML = crx.generateUpdateXML()
         fs.promises.writeFile(`${outputDir}/update.xml`, updateXML);
+        fs.promises.writeFile(`${base}.crx`, crxBuffer);
         fs.promises.writeFile(`${prefix}.crx`, crxBuffer);
     })
-    .then((file) => azure.uploadArtifacts(`${outputDir}/update.xml`, `${prefix}.crx`))
+    .then((file) => azure.uploadArtifacts(`${outputDir}/update.xml`, `${base}.crx`, `${prefix}.crx`))
     .catch(err => {
         console.error(err);
     });
@@ -67,7 +70,18 @@ webExt.cmd.sign({
     console.log(result);
     if (result['success']) {
         const artifact = result['downloadedFiles'][0];
+        fs.copyFile(artifact, `./build/${base}.xpi`, (err) => {
+            if (err) throw err;
+            console.log(`./build/${base}.xpi was copied to destination.txt`);
+        });
+
+        fs.copyFile(artifact, `./build/${prefix}.xpi`, (err) => {
+            if (err) throw err;
+            console.log(`./build/${prefix}.xpi was copied to destination.txt`);
+        });
+        fs.unlink(artifact);
+
         console.log('Uploading Firefox artifact', artifact);
-        azure.uploadArtifacts(artifact);
+        azure.uploadArtifacts(`./build/${base}.xpi`, `./build/${prefix}.xpi`);
     }
 });
