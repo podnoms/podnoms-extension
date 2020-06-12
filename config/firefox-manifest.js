@@ -1,7 +1,7 @@
 const firefoxManifestExtra = {
     applications: {
         gecko: {
-            id: "{2a6bcbb2-6ee5-46ef-8886-50a1af61be5d}",
+            id: "firefox-extension@podnoms.com",
             strict_min_version: "53.0"
         }
     }

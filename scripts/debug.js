@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const manifestOptions = require('../config/manifest');
+const manifestOptions = require('../config/firefox-manifest');
 const buildDir = path.resolve(__dirname, '../extension');
 
 fs.readFile(`${buildDir}/manifest.json`, 'utf8', (err, data) => {
