@@ -64,7 +64,7 @@ zl.archiveFolder(outputDir, `${outputDir}/${prefix}.zip`).then(() => {
 console.log('Building firefox XPI');
 webExt.cmd.sign({
     sourceDir: buildDir,
-    id: '{2a6bcbb2-6ee5-46ef-8886-50a1af61be5d}'
+    id: '{2a6bcbb2-6ee5-46ef-8886-50a1af61be5d}',
     artifactsDir: './build',
     apiKey: process.env.MOZILLA_API_KEY,
     apiSecret: process.env.MOZILLA_API_SECRET
