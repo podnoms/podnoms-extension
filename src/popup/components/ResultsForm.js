@@ -11,7 +11,7 @@ import PageActivity from "../shared/PageActivity";
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 
-const parseQuery = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/parse?url=`;
+const parseQuery = `${process.env.REACT_APP_API_SERVER_URL}/urlprocess/validate?url=`;
 const podcastListQuery = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/podcasts`;
 const podcastAdd = `${process.env.REACT_APP_API_SERVER_URL}/entry`;
 
