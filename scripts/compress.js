@@ -71,6 +71,6 @@ webExt.cmd.sign({
         fs.unlink(artifact, (r) => console.log('Artifact deleted'));
 
         console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
-        azure.uploadArtifacts(`${outputDir}/.xpi`, `${outputDir}/${prefix}.xpi`);
+        azure.uploadArtifacts(`${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
     }
 });
