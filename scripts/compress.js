@@ -67,6 +67,7 @@ function _buildFirefox() {
     console.log('Building firefox XPI');
 //add the extra firefox schizzle onto the manifest
     fs.readFile(`${buildDir}/manifest.json`, 'utf8', (err, data) => {
+        const manifestOptions = require('../config/manifest');
 
         let obj = JSON.parse(data); //now it an object
         obj = Object.assign(obj, manifestOptions.firefoxManifestExtra);
