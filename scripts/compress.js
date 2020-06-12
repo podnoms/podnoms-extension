@@ -9,6 +9,7 @@ const fs = require('fs');
 const ChromeExtension = require('crx');
 const path = require('path');
 const webExt = require('web-ext').default;
+const zl = require("zip-lib");
 
 const azure = require('./azure.js');
 
@@ -23,6 +24,7 @@ const existsKey = fs.existsSync(keyPath);
 const outputDir = './build';
 const base = `${name}`;
 const prefix = `${base}-${version}`;
+const buildDir = path.resolve(__dirname, '../extension');
 
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
@@ -33,7 +35,7 @@ const crx = new ChromeExtension({
 });
 console.log('Prefix: ', prefix);
 
-crx.load(path.resolve(__dirname, '../extension'))
+crx.load(buildDir)
     .then(crx => crx.pack())
     .then(crxBuffer => {
         const updateXML = crx.generateUpdateXML();
@@ -46,31 +48,43 @@ crx.load(path.resolve(__dirname, '../extension'))
         console.error(err);
     });
 
-// do the same for firefox.
-console.log('Building firefox XPI');
-webExt.cmd.sign({
-    sourceDir: './extension',
-    artifactsDir: './build',
-    apiKey: 'user:16056403:686',
-    apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748'
-}, {
-    shouldExitProgram: false,
-}).then((result) => {
-    console.log(result);
-    if (result['success']) {
-        const artifact = result['downloadedFiles'][0];
-        fs.copyFile(artifact, `${outputDir}/${base}.xpi`, (err) => {
-            if (err) throw err;
-            console.log(`${outputDir}/${base}.xpi was copied to destination.txt`);
-        });
-
-        fs.copyFile(artifact, `${outputDir}/${prefix}.xpi`, (err) => {
-            if (err) throw err;
-            console.log(`${outputDir}/${prefix}.xpi was copied to base`);
-        });
-        fs.unlink(artifact, (r) => console.log('Artifact deleted'));
-
-        console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
-        azure.uploadArtifacts(`${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
-    }
+console.log('Building Edge zip');
+zl.archiveFolder(outputDir, `${outputDir}/${prefix}.zip`).then(() => {
+    console.log("Created versioned Edge extension");
+    fs.copyFile(`${outputDir}/${prefix}.zip`, `${outputDir}/${base}.zip`, (err) => {
+        if (err) throw err;
+        console.log(`${outputDir}/${prefix}.xpi was copied to base`);
+        azure.uploadArtifacts(`${outputDir}/${prefix}.zip`, `${outputDir}/${base}.zip`);
+    });
+}, (err) => {
+    console.log(err);
 });
+
+
+console.log('Building firefox XPI');
+// webExt.cmd.sign({
+//     sourceDir: buildDir,
+//     artifactsDir: './build',
+//     apiKey: 'user:16056403:686',
+//     apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748'
+// }, {
+//     shouldExitProgram: false,
+// }).then((result) => {
+//     console.log(result);
+//     if (result['success']) {
+//         const artifact = result['downloadedFiles'][0];
+//         fs.copyFile(artifact, `${outputDir}/${base}.xpi`, (err) => {
+//             if (err) throw err;
+//             console.log(`${outputDir}/${base}.xpi was copied to destination.txt`);
+//         });
+//
+//         fs.copyFile(artifact, `${outputDir}/${prefix}.xpi`, (err) => {
+//             if (err) throw err;
+//             console.log(`${outputDir}/${prefix}.xpi was copied to base`);
+//         });
+//         fs.unlink(artifact, (r) => console.log('Artifact deleted'));
+//
+//         console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
+//         azure.uploadArtifacts(`${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
+//     }
+// });
