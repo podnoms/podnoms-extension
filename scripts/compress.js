@@ -21,21 +21,16 @@ const version = require('../package.json').version;
 const keyPath = argv.key || 'key.pem';
 const existsKey = fs.existsSync(keyPath);
 const outputDir = './build';
+const base = `${name}`;
+const prefix = `${base}-${version}`;
+
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
 }
-// const crx = new ChromeExtension({
-//   appId: argv['app-id'],
-//   codebase: argv.codebase,
-//   privateKey: existsKey ? fs.readFileSync(keyPath) : null
-// });
-
 const crx = new ChromeExtension({
     codebase: 'https://podnoms.com/podnoms.crx',
     privateKey: existsKey ? fs.readFileSync(keyPath) : null
 });
-const base = `${outputDir}/${name}`;
-const prefix = `${base}-${version}`;
 console.log('Prefix: ', prefix);
 
 crx.load(path.resolve(__dirname, '../extension'))
@@ -43,8 +38,8 @@ crx.load(path.resolve(__dirname, '../extension'))
     .then(crxBuffer => {
         const updateXML = crx.generateUpdateXML();
         fs.promises.writeFile(`${outputDir}/update.xml`, updateXML);
-        fs.promises.writeFile(`${base}.crx`, crxBuffer);
-        fs.promises.writeFile(`${prefix}.crx`, crxBuffer);
+        fs.promises.writeFile(`${outputDir}/${base}.crx`, crxBuffer);
+        fs.promises.writeFile(`${outputDir}/${prefix}.crx`, crxBuffer);
     })
     .then(() => azure.uploadArtifacts(`${outputDir}/update.xml`, `${base}.crx`, `${prefix}.crx`))
     .catch(err => {
@@ -64,18 +59,18 @@ webExt.cmd.sign({
     console.log(result);
     if (result['success']) {
         const artifact = result['downloadedFiles'][0];
-        fs.copyFile(artifact, `./build/${base}.xpi`, (err) => {
+        fs.copyFile(artifact, `${outputDir}/${base}.xpi`, (err) => {
             if (err) throw err;
-            console.log(`./build/${base}.xpi was copied to destination.txt`);
+            console.log(`${outputDir}/${base}.xpi was copied to destination.txt`);
         });
 
-        fs.copyFile(artifact, `./build/${prefix}.xpi`, (err) => {
+        fs.copyFile(artifact, `${outputDir}/${prefix}.xpi`, (err) => {
             if (err) throw err;
-            console.log(`./build/${prefix}.xpi was copied to destination.txt`);
+            console.log(`${outputDir}/${prefix}.xpi was copied to base`);
         });
         fs.unlink(artifact, (r) => console.log('Artifact deleted'));
 
-        console.log('Uploading Firefox artifact', `./build/${base}.xpi`, `./build/${prefix}.xpi`);
-        azure.uploadArtifacts(`./build/${base}.xpi`, `./build/${prefix}.xpi`);
+        console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
+        azure.uploadArtifacts(`${outputDir}/.xpi`, `${outputDir}/${prefix}.xpi`);
     }
 });
