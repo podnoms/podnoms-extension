@@ -1,39 +1,43 @@
 {
-    "version": "1.0",
-    "manifest_version": 2,
-    "name": "Send 2 PodNoms",
-    "description": "Web Extension to send audio from a web page to podnoms.com",
-    "background": {
-        "scripts": ["lib/js/browser-polyfill.js", "background.js"]
-    },
-    "browser_action": {
-        "default_title": "Send 2 PodNoms",
-        "default_icon": "img/icon-152x152.png",
-        "default_popup": "popup.html"
-    },
-    "permissions": [
-        "tabs",
-        "storage",
-        "webRequest"
-    ],
-    "icons": {
-        "72": "img/icon-72x72.png",
-        "96": "img/icon-96x96.png",
-        "128": "img/icon-128x128.png",
-        "144": "img/icon-144x144.png",
-        "152": "img/icon-152x152.png",
-        "192": "img/icon-192x192.png",
-        "384": "img/icon-384x384.png",
-        "512": "img/icon-512x512.png"
-    },
-    "options_ui": {
-        "page": "./options.html",
-        "open_in_tab": false
-    },
-    "applications": {
-        "gecko": {
-            "id": "{2a6bcbb2-6ee5-46ef-8886-50a1af61be5d}",
-            "strict_min_version": "53.0"
-        }
+  "version": "1.0",
+  "manifest_version": 2,
+  "name": "Send 2 PodNoms",
+  "description": "Web Extension to send audio from a web page to podnoms.com",
+  "background": {
+    "scripts": [
+      "lib/js/browser-polyfill.js",
+      "background.js"
+    ]
+  },
+  "browser_action": {
+    "default_title": "Send 2 PodNoms",
+    "default_icon": "img/icon-152x152.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "webRequest",
+    "http://*.podnoms.com/"
+  ],
+  "icons": {
+    "72": "img/icon-72x72.png",
+    "96": "img/icon-96x96.png",
+    "128": "img/icon-128x128.png",
+    "144": "img/icon-144x144.png",
+    "152": "img/icon-152x152.png",
+    "192": "img/icon-192x192.png",
+    "384": "img/icon-384x384.png",
+    "512": "img/icon-512x512.png"
+  },
+  "options_ui": {
+    "page": "./options.html",
+    "open_in_tab": false
+  },
+  "applications": {
+    "gecko": {
+      "id": "{2a6bcbb2-6ee5-46ef-8886-50a1af61be5d}",
+      "strict_min_version": "53.0"
     }
+  }
 }
