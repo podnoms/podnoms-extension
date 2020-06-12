@@ -46,7 +46,8 @@ crx.load(path.resolve(__dirname, '../extension'))
 //do the same for firefox.
 console.log('Building firefox XPI');
 webExt.cmd.sign({
-    sourceDir: '/home/fergalm/dev/podnoms/podnoms-extension/build',
+    sourceDir: './extension',
+    artifactsDir: './build',
     apiKey: 'user:16056403:686',
     apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748'
 }, {
