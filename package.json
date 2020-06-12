@@ -1,7 +1,7 @@
 {
   "name": "send-2-podnoms",
   "homepage": "https://podnoms.com",
-  "version": "1.0.51",
+  "version": "1.0.52",
   "description": "A web extension for parsing audio on webpages and sending them to one of your podcasts on podnoms.com",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
