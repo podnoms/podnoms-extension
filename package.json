@@ -108,7 +108,7 @@
     "terser-webpack-plugin": "1.1.0",
     "url-loader": "1.1.1",
     "web-ext": "^4.2.0",
-    "webextension-polyfill": "^0.3.1",
+    "webextension-polyfill": "^0.6.0",
     "webpack": "4.19.1",
     "webpack-cli": "^3.2.1",
     "webpack-dev-server": "3.1.14",

@@ -20,6 +20,7 @@ module.exports = {
     "no-console": "off",
     "no-underscore-dangle": "off",
     "no-plusplus": "off",
+    "no-unused-vars": "off",
     "no-continue": "off",
     camelcase: "off",
     "no-empty": "off",
