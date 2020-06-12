@@ -9,3 +9,4 @@ dev
 .env.development
 .env.productionkey.pem
 build
+.env.build
