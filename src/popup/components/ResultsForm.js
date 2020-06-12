@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import axios from "axios";
-import PageBody from "../shared/PageBody";
+import axios from 'axios';
+import PageBody from '../shared/PageBody';
 import * as browser from 'webextension-polyfill';
-import PageHeader from "../shared/PageHeader";
-import PageFooterActions from "../shared/PageFooterActions";
-import PageFooter from "../shared/PageFooter";
-import PageMissing from "../shared/PageMissing";
-import PageActivity from "../shared/PageActivity";
+import PageHeader from '../shared/PageHeader';
+import PageFooterActions from '../shared/PageFooterActions';
+import PageFooter from '../shared/PageFooter';
+import PageMissing from '../shared/PageMissing';
+import PageActivity from '../shared/PageActivity';
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
@@ -52,18 +52,18 @@ class ResultsForm extends Component {
             podcastId: podcast,
             sourceUrl: url,
             title: this.state.entryTitle
-        }
+        };
         axios.post(podcastAdd, JSON.stringify(entry), this.config)
             .then((response) => {
-                    if (
-                        response &&
+                if (
+                    response &&
                         response.status === 200
-                    ) {
-                        console.log('Setting state', this);
-                        this.setStateToSuccess(response.data.podcastSlug)
-                    }
+                ) {
+                    console.log('Setting state', this);
+                    this.setStateToSuccess(response.data.podcastSlug);
                 }
-            )
+            }
+            );
     }
 
     componentDidMount() {
@@ -73,35 +73,35 @@ class ResultsForm extends Component {
                 active: true,
                 currentWindow: true
             }).then(tabs => {
-                const url = tabs[0].url;
-                axios.get(`${parseQuery}${url}`, this.config).then(
-                    response => {
-                        if (response && response.status === 200) {
-                            this.setState({
-                                links: response.data.links,
-                                entryTitle: response.data.title,
-                                view: response.data.links && response.data.links.length !== 0 ? 'parse' : 'missing'
-                            })
-                        }
+            const url = tabs[0].url;
+            axios.get(`${parseQuery}${url}`, this.config).then(
+                response => {
+                    if (response && response.status === 200) {
+                        this.setState({
+                            links: response.data.links,
+                            entryTitle: response.data.title,
+                            view: response.data.links && response.data.links.length !== 0 ? 'parse' : 'missing'
+                        });
                     }
-                )
-                axios.get(podcastListQuery, this.config).then(
-                    response => {
-                        if (
-                            response &&
+                }
+            );
+            axios.get(podcastListQuery, this.config).then(
+                response => {
+                    if (
+                        response &&
                             response.status === 200 &&
                             response.data
-                        ) {
-                            this.setState({podcasts: response.data})
-                        }
+                    ) {
+                        this.setState({podcasts: response.data});
                     }
-                )
-            }
-        )
+                }
+            );
+        }
+        );
     }
 
     componentWillUnmount() {
-        source.cancel('Component unmounted')
+        source.cancel('Component unmounted');
     }
 
     render() {
@@ -111,14 +111,14 @@ class ResultsForm extends Component {
                 {(() => {
                     switch (this.state.view) {
                         case ('checking'):
-                            return <PageActivity/>
+                            return <PageActivity/>;
                         case ('missing'):
-                            return <PageMissing/>
+                            return <PageMissing/>;
                         case ('parse'):
                             return <PageBody links={this.state.links} podcasts={this.state.podcasts}
-                                             selectedPodcastChanged={p => this.setState({podcastSlug: p})}
-                                             selectedEntryChanged={e => this.setState({entryUrl: e})}
-                                             addPodcast={this.addPodcast}/>;
+                                selectedPodcastChanged={p => this.setState({podcastSlug: p})}
+                                selectedEntryChanged={e => this.setState({entryUrl: e})}
+                                addPodcast={this.addPodcast}/>;
                         case 'success':
                             return <div className="block page-wrapper">
                                 <div className="block-content block-content-full">
@@ -130,13 +130,13 @@ class ResultsForm extends Component {
                                         <div className="text-muted">Entry successfully added to podcast</div>
                                         <div className="pt-20">
                                             <a className="btn btn-rounded btn-alt-info"
-                                               href={this.state.podcastUrl} target="_blank">
+                                                href={this.state.podcastUrl} target="_blank">
                                                 <i className="fa fa-users mr-5"/> Check it out
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>;
                     }
                 })()}
                 {this.state.view === 'parse' ?
@@ -145,7 +145,7 @@ class ResultsForm extends Component {
                 }
 
             </div>
-        )
+        );
     }
 }
 

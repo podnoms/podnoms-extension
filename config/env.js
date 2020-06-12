@@ -9,20 +9,20 @@ delete require.cache[require.resolve('./paths')];
 
 const NODE_ENV = process.env.NODE_ENV;
 if (!NODE_ENV) {
-  throw new Error(
-    'The NODE_ENV environment variable is required but was not specified.'
-  );
+    throw new Error(
+        'The NODE_ENV environment variable is required but was not specified.'
+    );
 }
 
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 var dotenvFiles = [
-  `${paths.dotenv}.${NODE_ENV}.local`,
-  `${paths.dotenv}.${NODE_ENV}`,
-  // Don't include `.env.development.local` for `test` environment
-  // since normally you expect tests to produce the same
-  // results for everyone
-  NODE_ENV !== 'test' && `${paths.dotenv}.local`,
-  paths.dotenv,
+    `${paths.dotenv}.${NODE_ENV}.local`,
+    `${paths.dotenv}.${NODE_ENV}`,
+    // Don't include `.env.development.local` for `test` environment
+    // since normally you expect tests to produce the same
+    // results for everyone
+    NODE_ENV !== 'test' && `${paths.dotenv}.local`,
+    paths.dotenv,
 ].filter(Boolean);
 
 // Load environment variables from .env* files. Suppress warnings using silent
@@ -31,13 +31,13 @@ var dotenvFiles = [
 // https://github.com/motdotla/dotenv
 // https://github.com/motdotla/dotenv-expand
 dotenvFiles.forEach(dotenvFile => {
-  if (fs.existsSync(dotenvFile)) {
-    require('dotenv-expand')(
-      require('dotenv').config({
-        path: dotenvFile,
-      })
-    );
-  }
+    if (fs.existsSync(dotenvFile)) {
+        require('dotenv-expand')(
+            require('dotenv').config({
+                path: dotenvFile,
+            })
+        );
+    }
 });
 
 // We support resolving modules according to `NODE_PATH`.
@@ -51,7 +51,7 @@ dotenvFiles.forEach(dotenvFile => {
 // We also resolve them to make sure all tools using them work consistently.
 const appDirectory = fs.realpathSync(process.cwd());
 process.env.NODE_PATH = (process.env.NODE_PATH || '')
-  .split(path.delimiter)
-  .filter(folder => folder && !path.isAbsolute(folder))
-  .map(folder => path.resolve(appDirectory, folder))
-  .join(path.delimiter);
+    .split(path.delimiter)
+    .filter(folder => folder && !path.isAbsolute(folder))
+    .map(folder => path.resolve(appDirectory, folder))
+    .join(path.delimiter);

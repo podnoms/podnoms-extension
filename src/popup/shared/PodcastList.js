@@ -8,18 +8,18 @@ const PodcastList = (props) => {
             <div className="col-md-9">
                 <div className="block block-themed">
                     <select className="form-control" id="select-podcast" name="select-podcast"
-                            value={selectedPodcast}
-                            onChange={event => {
-                                setSelectedPodcast(event.target.value);
-                                props.podcastSelected(event.target.value);
-                            }}>
+                        value={selectedPodcast}
+                        onChange={event => {
+                            setSelectedPodcast(event.target.value);
+                            props.podcastSelected(event.target.value);
+                        }}>
                         <option value={'0'}  disabled>Please choose a podcast</option>
                         {props.podcasts.map(r => <option key={r.id} value={r.id}>{r.title}</option>)}
                     </select>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default PodcastList
+export default PodcastList;

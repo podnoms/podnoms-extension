@@ -2,14 +2,14 @@ process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
 
 require('../config/env');
-require('dotenv').config()
+require('dotenv').config();
 
 const azureStorage = require('azure-storage')
     , blobService = azureStorage.createBlobService()
-    , path = require('path')
-    , fs = require('fs');
+    , path = require('path');
+
 const handleError = (err, res) => {
-    console.error('Error uploading to blob storage', err);
+    console.error('Error uploading to blob storage', err, res);
 };
 
 const containerName = 'external';
@@ -22,17 +22,17 @@ module.exports.uploadArtifacts = (...files) => {
         const options = {
             contentType: 'application/octet-stream',
             metadata: {fileName: path.basename(file)}
-        }
-        const rr = fs.createReadStream(file);
+        };
         blobService.createBlockBlobFromLocalFile(
             containerName,
             getBlobName(file),
             file,
             options, (error, result, response) => {
                 if (error) {
-                    handleError(error);
+                    console.log('Error azuring', error, result, response);
+                    handleError(error, result);
                 }
                 console.log('success', 'File uploaded to Azure Blob storage.');
             });
-    })
+    });
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import './Popup.css';
-import ResultsForm from "./components/ResultsForm";
-import SetupRequired from "./components/SetupRequired";
+import ResultsForm from './components/ResultsForm';
+import SetupRequired from './components/SetupRequired';
 
 const Popup = (props) => {
     return (

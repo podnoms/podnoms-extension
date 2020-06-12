@@ -3,7 +3,7 @@ process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
 
 require('../config/env');
-require('dotenv').config()
+require('dotenv').config();
 
 const fs = require('fs');
 const ChromeExtension = require('crx');
@@ -42,24 +42,22 @@ crx.load(path.resolve(__dirname, '../extension'))
     .then(() => crx.loadContents())
     .then((zip) => fs.promises.writeFile(`${base}.zip`, zip))
     .then((zip) => fs.promises.writeFile(`${prefix}.zip`, zip))
-    .then((file) => azure.uploadArtifacts(`${base}.zip`, `${prefix}.zip`));
-
-return;
+    .then(() => azure.uploadArtifacts(`${base}.zip`, `${prefix}.zip`));
 
 crx.load(path.resolve(__dirname, '../extension'))
     .then(crx => crx.pack())
     .then(crxBuffer => {
-        const updateXML = crx.generateUpdateXML()
+        const updateXML = crx.generateUpdateXML();
         fs.promises.writeFile(`${outputDir}/update.xml`, updateXML);
         fs.promises.writeFile(`${base}.crx`, crxBuffer);
         fs.promises.writeFile(`${prefix}.crx`, crxBuffer);
     })
-    .then((file) => azure.uploadArtifacts(`${outputDir}/update.xml`, `${base}.crx`, `${prefix}.crx`))
+    .then(() => azure.uploadArtifacts(`${outputDir}/update.xml`, `${base}.crx`, `${prefix}.crx`))
     .catch(err => {
         console.error(err);
     });
 
-//do the same for firefox.
+// do the same for firefox.
 console.log('Building firefox XPI');
 webExt.cmd.sign({
     sourceDir: './extension',

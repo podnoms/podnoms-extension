@@ -1,6 +1,6 @@
 import React from 'react';
 // import PageHeader from "../shared/PageHeader";
-import PageFooter from "../shared/PageFooter";
+import PageFooter from '../shared/PageFooter';
 
 const SetupRequired = () => {
     return (

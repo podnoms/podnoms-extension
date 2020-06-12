@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
-const HtmlIncAssetsPlugin = require('html-webpack-include-assets-plugin');
 
 const paths = require('../paths');
 
@@ -142,7 +141,7 @@ module.exports = function (webpackEnv) {
             doesOptionsHtmlExist && plugins.optionsHtmlPlugin,
             doesPopupHtmlExist && plugins.popupHtmlPlugin,
             doesSidebarHtmlExist && plugins.sidebarHtmlPlugin,
-            plugins.htmlInpcAssetsPlugin,
+            plugins.htmlIncAssetsPlugin,
             plugins.moduleNotFoundPlugin,
             isEnvDevelopment && plugins.CaseSensitivePathsPlugin,
             isEnvDevelopment && plugins.watchMissingNodeModulesPlugin,
