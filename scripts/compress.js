@@ -39,12 +39,6 @@ const prefix = `${base}-${version}`;
 console.log('Prefix: ', prefix);
 
 crx.load(path.resolve(__dirname, '../extension'))
-    .then(() => crx.loadContents())
-    .then((zip) => fs.promises.writeFile(`${base}.zip`, zip))
-    .then((zip) => fs.promises.writeFile(`${prefix}.zip`, zip))
-    .then(() => azure.uploadArtifacts(`${base}.zip`, `${prefix}.zip`));
-
-crx.load(path.resolve(__dirname, '../extension'))
     .then(crx => crx.pack())
     .then(crxBuffer => {
         const updateXML = crx.generateUpdateXML();
