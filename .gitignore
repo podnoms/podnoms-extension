@@ -11,3 +11,4 @@ dev
 key.pem
 build
 .env.local
+.idea
