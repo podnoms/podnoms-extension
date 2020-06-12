@@ -13,12 +13,12 @@ if (!NODE_ENV) {
     'The NODE_ENV environment variable is required but was not specified.'
   );
 }
-
+debugger;
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 var dotenvFiles = [
   `${paths.dotenv}.${NODE_ENV}.local`,
   `${paths.dotenv}.${NODE_ENV}`,
-  // Don't include `.env.local` for `test` environment
+  // Don't include `.env.development.local` for `test` environment
   // since normally you expect tests to produce the same
   // results for everyone
   NODE_ENV !== 'test' && `${paths.dotenv}.local`,

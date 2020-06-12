@@ -1,3 +1,10 @@
+// Do this as the first thing so that any code reading it knows the right env.
+process.env.BABEL_ENV = 'production';
+process.env.NODE_ENV = 'production';
+
+require('../config/env');
+require('dotenv').config()
+
 const fs = require('fs');
 const ChromeExtension = require('crx');
 const path = require('path');
@@ -5,11 +12,6 @@ const webExt = require('web-ext').default;
 
 const azure = require('./azure.js');
 
-const dotenv = require('dotenv');
-dotenv.config();
-
-console.log('Azure connection string', process.env.AZURE_STORAGE_CONNECTION_STRING);
-return;
 
 /* eslint import/no-unresolved: 0 */
 const argv = require('minimist')(process.argv.slice(2));

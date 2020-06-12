@@ -1,5 +1,12 @@
+process.env.BABEL_ENV = 'production';
+process.env.NODE_ENV = 'production';
+
+require('../config/env');
+require('dotenv').config()
+
 const azureStorage = require('azure-storage')
     , blobService = azureStorage.createBlobService()
+    , path = require('path')
     , fs = require('fs');
 const handleError = (err, res) => {
     console.error('Error uploading to blob storage', err);
