@@ -2,7 +2,6 @@
     "version": "1.0",
     "manifest_version": 2,
     "name": "Send 2 PodNoms",
-    "key": "idhfpcbfcbppfngmhidbaimgefdjoljh",
     "description": "Web Extension to send audio from a web page to podnoms.com",
     "background": {
         "scripts": ["lib/js/browser-polyfill.js", "background.js"]
@@ -30,5 +29,11 @@
     "options_ui": {
         "page": "./options.html",
         "open_in_tab": false
+    },
+    "applications": {
+        "gecko": {
+            "id": "fergal.moran@podnoms.com",
+            "strict_min_version": "53.0"
+        }
     }
 }
