@@ -66,7 +66,8 @@ webExt.cmd.sign({
 }).then((result) => {
     console.log(result);
     if (result['success']) {
-        const artifact = result['downloadedFiles'];
+        const artifact = result['downloadedFiles'][0];
+        console.log('Uploading Firefox artifact', artifact);
         azure.uploadArtifacts(artifact);
     }
 });
