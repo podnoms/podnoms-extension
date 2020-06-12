@@ -7,6 +7,7 @@ dev
 .vscode
 
 .env.development
-.env.productionkey.pem
+.env.production
+key.pem
 build
-.env.build
+.env.local
