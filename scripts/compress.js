@@ -46,7 +46,6 @@ crx.load(path.resolve(__dirname, '../extension'))
 //do the same for firefox.
 console.log('Building firefox XPI');
 webExt.cmd.sign({
-    id: '{2a6bcbb2-6ee5-46ef-8886-50a1af61be5d}',
     sourceDir: './extension',
     artifactsDir: './build',
     apiKey: 'user:16056403:686',
@@ -54,5 +53,5 @@ webExt.cmd.sign({
 }, {
     shouldExitProgram: true,
 }).then((result) => {
-        console.log(result);
-    });
+    console.log(result);
+});
