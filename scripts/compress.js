@@ -42,7 +42,9 @@ crx.load(path.resolve(__dirname, '../extension'))
     .then(() => crx.loadContents())
     .then((zip) => fs.promises.writeFile(`${base}.zip`, zip))
     .then((zip) => fs.promises.writeFile(`${prefix}.zip`, zip))
-    .then((file) => azure.uploadArtifacts(`${prefix}.zip`));
+    .then((file) => azure.uploadArtifacts(`${base}.zip`, `${prefix}.zip`));
+
+return;
 
 crx.load(path.resolve(__dirname, '../extension'))
     .then(crx => crx.pack())
