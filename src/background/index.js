@@ -6,13 +6,11 @@ import * as browser from 'webextension-polyfill';
 require('dotenv').config();
 browser.storage.sync.get(['api_key']).then(response => {
     if (response.api_key) {
-        browser.tabs.query({
-            active: true,
-            currentWindow: true
-        }, (tabs) => {
-            const tab = tabs[0];
-            _checkForAudio(response.api_key, tab.id, tab);
-        });
+        browser.tabs.query({currentWindow: true, active: true})
+            .then((tabs) => {
+                const tab = tabs[0];
+                _checkForAudio(response.api_key, tab.id, tab);
+            });
     }
 });
 
