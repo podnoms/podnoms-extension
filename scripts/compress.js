@@ -51,32 +51,7 @@ webExt.cmd.sign({
     apiKey: 'user:16056403:686',
     apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748'
 }, {
-    // These are non CLI related options for each function.
-    // You need to specify this one so that your NodeJS application
-    // can continue running after web-ext is finished.
     shouldExitProgram: true,
-})
-    .then((extensionRunner) => {
-        // The command has finished. Each command resolves its
-        // promise with a different value.
-        console.log(extensionRunner);
-        // You can do a few things like:
-        // extensionRunner.reloadAllExtensions();
-        // extensionRunner.exit();
+}).then((result) => {
+        console.log(result);
     });
-
-// crx.load('extension')
-//   .then(() => {
-//       crx.loadContents();
-//   })
-//   .then((archiveBuffer) => {
-//     fs.writeFile(`${name}.zip`, archiveBuffer);
-//
-//     if (!argv.codebase || !existsKey) return;
-//     crx.pack(archiveBuffer).then((crxBuffer) => {
-//       const updateXML = crx.generateUpdateXML();
-//
-//       fs.writeFile('update.xml', updateXML);
-//       fs.writeFile(`${name}.crx`, crxBuffer);
-//     });
-//   }).catch(e => console.error('Error compressing output', e));
