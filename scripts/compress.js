@@ -44,25 +44,25 @@ crx.load(path.resolve(__dirname, '../extension'))
     });
 
 //do the same for firefox.
-//
-// webExt.cmd.sign({
-//     sourceDir: './build',
-//     apiKey: 'user:16056403:686',
-//     apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748',
-// }, {
-//     // These are non CLI related options for each function.
-//     // You need to specify this one so that your NodeJS application
-//     // can continue running after web-ext is finished.
-//     shouldExitProgram: true,
-// })
-//     .then((extensionRunner) => {
-//         // The command has finished. Each command resolves its
-//         // promise with a different value.
-//         console.log(extensionRunner);
-//         // You can do a few things like:
-//         // extensionRunner.reloadAllExtensions();
-//         // extensionRunner.exit();
-//     });
+console.log('Building firefox XPI');
+webExt.cmd.sign({
+    sourceDir: './build',
+    apiKey: 'user:16056403:686',
+    apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748',
+}, {
+    // These are non CLI related options for each function.
+    // You need to specify this one so that your NodeJS application
+    // can continue running after web-ext is finished.
+    shouldExitProgram: true,
+})
+    .then((extensionRunner) => {
+        // The command has finished. Each command resolves its
+        // promise with a different value.
+        console.log(extensionRunner);
+        // You can do a few things like:
+        // extensionRunner.reloadAllExtensions();
+        // extensionRunner.exit();
+    });
 
 // crx.load('extension')
 //   .then(() => {
