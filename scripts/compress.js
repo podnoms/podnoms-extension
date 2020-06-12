@@ -41,7 +41,7 @@ crx.load(path.resolve(__dirname, '../extension'))
         fs.promises.writeFile(`${outputDir}/${base}.crx`, crxBuffer);
         fs.promises.writeFile(`${outputDir}/${prefix}.crx`, crxBuffer);
     })
-    .then(() => azure.uploadArtifacts(`${outputDir}/update.xml`, `${base}.crx`, `${prefix}.crx`))
+    .then(() => azure.uploadArtifacts(`${outputDir}/update.xml`, `${outputDir}/${base}.crx`, `${outputDir}/${prefix}.crx`))
     .catch(err => {
         console.error(err);
     });
@@ -54,7 +54,7 @@ webExt.cmd.sign({
     apiKey: 'user:16056403:686',
     apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748'
 }, {
-    shouldExitProgram: true,
+    shouldExitProgram: false,
 }).then((result) => {
     console.log(result);
     if (result['success']) {
