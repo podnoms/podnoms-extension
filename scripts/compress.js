@@ -62,29 +62,29 @@ zl.archiveFolder(outputDir, `${outputDir}/${prefix}.zip`).then(() => {
 
 
 console.log('Building firefox XPI');
-// webExt.cmd.sign({
-//     sourceDir: buildDir,
-//     artifactsDir: './build',
-//     apiKey: 'user:16056403:686',
-//     apiSecret: '35e472f7043f2e4c15997f1758ff99bcbd31b941bf5442be7844c989d2892748'
-// }, {
-//     shouldExitProgram: false,
-// }).then((result) => {
-//     console.log(result);
-//     if (result['success']) {
-//         const artifact = result['downloadedFiles'][0];
-//         fs.copyFile(artifact, `${outputDir}/${base}.xpi`, (err) => {
-//             if (err) throw err;
-//             console.log(`${outputDir}/${base}.xpi was copied to destination.txt`);
-//         });
-//
-//         fs.copyFile(artifact, `${outputDir}/${prefix}.xpi`, (err) => {
-//             if (err) throw err;
-//             console.log(`${outputDir}/${prefix}.xpi was copied to base`);
-//         });
-//         fs.unlink(artifact, (r) => console.log('Artifact deleted'));
-//
-//         console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
-//         azure.uploadArtifacts(`${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
-//     }
-// });
+webExt.cmd.sign({
+    sourceDir: buildDir,
+    artifactsDir: './build',
+    apiKey: process.env.MOZILLA_API_KEY,
+    apiSecret: process.env.MOZILLA_API_SECRET
+}, {
+    shouldExitProgram: false,
+}).then((result) => {
+    console.log(result);
+    if (result['success']) {
+        const artifact = result['downloadedFiles'][0];
+        fs.copyFile(artifact, `${outputDir}/${base}.xpi`, (err) => {
+            if (err) throw err;
+            console.log(`${outputDir}/${base}.xpi was copied to destination.txt`);
+        });
+
+        fs.copyFile(artifact, `${outputDir}/${prefix}.xpi`, (err) => {
+            if (err) throw err;
+            console.log(`${outputDir}/${prefix}.xpi was copied to base`);
+        });
+        fs.unlink(artifact, (r) => console.log('Artifact deleted'));
+
+        console.log('Uploading Firefox artifact', `${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
+        azure.uploadArtifacts(`${outputDir}/${base}.xpi`, `${outputDir}/${prefix}.xpi`);
+    }
+});
