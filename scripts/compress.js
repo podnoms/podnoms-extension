@@ -5,6 +5,12 @@ const webExt = require('web-ext').default;
 
 const azure = require('./azure.js');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
+console.log('Azure connection string', process.env.AZURE_STORAGE_CONNECTION_STRING);
+return;
+
 /* eslint import/no-unresolved: 0 */
 const argv = require('minimist')(process.argv.slice(2));
 const name = require('../package.json').name;
@@ -21,7 +27,6 @@ if (!fs.existsSync(outputDir)) {
 //   codebase: argv.codebase,
 //   privateKey: existsKey ? fs.readFileSync(keyPath) : null
 // });
-
 
 const crx = new ChromeExtension({
     codebase: 'https://podnoms.com/podnoms.crx',
