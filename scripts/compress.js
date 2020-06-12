@@ -1,6 +1,7 @@
 const fs = require('fs');
 const ChromeExtension = require('crx');
 const path = require('path');
+const webExt = require('web-ext');
 
 /* eslint import/no-unresolved: 0 */
 const argv = require('minimist')(process.argv.slice(2));
@@ -43,7 +44,6 @@ crx.load(path.resolve(__dirname, '../extension'))
     });
 
 //do the same for firefox.
-import webExt from 'web-ext';
 
 webExt.cmd.sign({
     sourceDir: './build',
