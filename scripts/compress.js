@@ -3,6 +3,8 @@ const ChromeExtension = require('crx');
 const path = require('path');
 const webExt = require('web-ext').default;
 
+const azure = require('azure');
+
 /* eslint import/no-unresolved: 0 */
 const argv = require('minimist')(process.argv.slice(2));
 const name = require('../package.json').name;
@@ -30,7 +32,8 @@ console.log('Prefix: ', prefix);
 
 crx.load(path.resolve(__dirname, '../extension'))
     .then(() => crx.loadContents())
-    .then((zip) => fs.promises.writeFile(`${prefix}.zip`, zip));
+    .then((zip) => fs.promises.writeFile(`${prefix}.zip`, zip))
+    .then((file) => azure.uploadArtifacts(`${prefix}.zip`));
 
 crx.load(path.resolve(__dirname, '../extension'))
     .then(crx => crx.pack())
@@ -39,6 +42,7 @@ crx.load(path.resolve(__dirname, '../extension'))
         fs.promises.writeFile(`${outputDir}/update.xml`, updateXML);
         fs.promises.writeFile(`${prefix}.crx`, crxBuffer);
     })
+    .then((file) => azure.uploadArtifacts(`${outputDir}/update.xml`, `${prefix}.crx`))
     .catch(err => {
         console.error(err);
     });
@@ -54,4 +58,8 @@ webExt.cmd.sign({
     shouldExitProgram: true,
 }).then((result) => {
     console.log(result);
+    if (result['success']) {
+        const artifact = result['downloadedFiles'];
+        azure.uploadArtifacts(artifact);
+    }
 });
