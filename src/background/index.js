@@ -4,22 +4,16 @@ import axios from 'axios';
 import * as browser from 'webextension-polyfill';
 
 require('dotenv').config();
-
-browser.tabs.onUpdated.addListener(tabId => {
-    // only do this if we decide to revert to page action
-    // chrome.pageAction.show(tabId);
-    browser.tabs
-        .query({
+browser.storage.sync.get(['api_key']).then(response => {
+    if (response.api_key) {
+        browser.tabs.query({
             active: true,
             currentWindow: true
-        })
-        .then(tabs => {
-            browser.storage.sync.get(['api_key']).then(response => {
-                if (response.api_key) {
-                    _checkForAudio(response.api_key, tabId, tabs[0]);
-                }
-            });
+        }, (tabs) => {
+            const tab = tabs[0];
+            _checkForAudio(response.api_key, tab.id, tab);
         });
+    }
 });
 
 function _checkForAudio(apiKey, tabId, tab) {
@@ -38,10 +32,10 @@ function _checkForAudio(apiKey, tabId, tab) {
             if (
                 response &&
                 response.status === 200 &&
-                response.links &&
-                response.links.length > 0
+                response.data.links &&
+                response.data.links.length > 0
             ) {
-                const count = response.links.length;
+                const count = response.data.links.length;
                 browser.browserAction.setBadgeText({
                     text: '' + (count === 0 ? '' : count),
                     tabId: tabId

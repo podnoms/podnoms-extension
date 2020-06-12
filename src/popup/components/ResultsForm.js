@@ -60,7 +60,7 @@ class ResultsForm extends Component {
                         response.status === 200
                     ) {
                         console.log('Setting state', this);
-                        this.setStateToSuccess(response.data['podcastSlug'])
+                        this.setStateToSuccess(response.data.podcastSlug)
                     }
                 }
             )
