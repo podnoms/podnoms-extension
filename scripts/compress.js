@@ -73,9 +73,9 @@ webExt.cmd.sign({
             if (err) throw err;
             console.log(`./build/${prefix}.xpi was copied to destination.txt`);
         });
-        fs.unlink(artifact);
+        fs.unlink(artifact, (r) => console.log('Artifact deleted'));
 
-        console.log('Uploading Firefox artifact', artifact);
+        console.log('Uploading Firefox artifact', `./build/${base}.xpi`, `./build/${prefix}.xpi`);
         azure.uploadArtifacts(`./build/${base}.xpi`, `./build/${prefix}.xpi`);
     }
 });
