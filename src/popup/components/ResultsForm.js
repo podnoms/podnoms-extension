@@ -7,6 +7,7 @@ import PageFooterActions from '../shared/PageFooterActions';
 import PageFooter from '../shared/PageFooter';
 import PageMissing from '../shared/PageMissing';
 import PageActivity from '../shared/PageActivity';
+import PageAuthExpired from "../shared/PageAuthExpired";
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
@@ -55,48 +56,59 @@ class ResultsForm extends Component {
         };
         axios.post(podcastAdd, JSON.stringify(entry), this.config)
             .then((response) => {
-                if (
-                    response &&
+                    if (
+                        response &&
                         response.status === 200
-                ) {
-                    console.log('Setting state', this);
-                    this.setStateToSuccess(response.data.podcastSlug);
+                    ) {
+                        console.log('Setting state', this);
+                        this.setStateToSuccess(response.data.podcastSlug);
+                    }
                 }
-            }
             );
     }
 
     componentDidMount() {
-
         browser.tabs.query(
             {
                 active: true,
                 currentWindow: true
             }).then(tabs => {
-            const url = tabs[0].url;
-            axios.get(`${parseQuery}${url}`, this.config).then(
-                response => {
-                    if (response && response.status === 200) {
-                        this.setState({
-                            links: response.data.links,
-                            entryTitle: response.data.title,
-                            view: response.data.links && response.data.links.length !== 0 ? 'parse' : 'missing'
-                        });
-                    }
+                const url = tabs[0].url;
+                if (!url.startsWith('http')){
+                    this.setState({view: 'missing'});
+                }else {
+                    axios.get(`${parseQuery}${url}`, this.config).then(
+                        response => {
+                            if (response && response.status === 200) {
+                                this.setState({
+                                    links: response.data.links,
+                                    entryTitle: response.data.title,
+                                    view: response.data.links && response.data.links.length !== 0 ? 'parse' : 'missing'
+                                });
+                            }
+                        }, error => {
+                            if (error.response && error.response.status === 401) {
+                                this.setState({view: 'invalidauth'});
+                                // browser.storage.sync.remove('api_key')
+                                //     .then(r => this.state.view = 'invalidauth');
+                            } else {
+                                this.setState({view: 'missing'});
+                            }
+                        }
+                    );
+                    axios.get(podcastListQuery, this.config).then(
+                        response => {
+                            if (
+                                response &&
+                                response.status === 200 &&
+                                response.data
+                            ) {
+                                this.setState({podcasts: response.data});
+                            }
+                        }
+                    );
                 }
-            );
-            axios.get(podcastListQuery, this.config).then(
-                response => {
-                    if (
-                        response &&
-                            response.status === 200 &&
-                            response.data
-                    ) {
-                        this.setState({podcasts: response.data});
-                    }
-                }
-            );
-        }
+            }
         );
     }
 
@@ -112,13 +124,15 @@ class ResultsForm extends Component {
                     switch (this.state.view) {
                         case ('checking'):
                             return <PageActivity/>;
+                        case ('invalidauth'):
+                            return <PageAuthExpired/>;
                         case ('missing'):
                             return <PageMissing/>;
                         case ('parse'):
                             return <PageBody links={this.state.links} podcasts={this.state.podcasts}
-                                selectedPodcastChanged={p => this.setState({podcastSlug: p})}
-                                selectedEntryChanged={e => this.setState({entryUrl: e})}
-                                addPodcast={this.addPodcast}/>;
+                                             selectedPodcastChanged={p => this.setState({podcastSlug: p})}
+                                             selectedEntryChanged={e => this.setState({entryUrl: e})}
+                                             addPodcast={this.addPodcast}/>;
                         case 'success':
                             return <div className="block page-wrapper">
                                 <div className="block-content block-content-full">
@@ -130,7 +144,7 @@ class ResultsForm extends Component {
                                         <div className="text-muted">Entry successfully added to podcast</div>
                                         <div className="pt-20">
                                             <a className="btn btn-rounded btn-alt-info"
-                                                href={this.state.podcastUrl} target="_blank">
+                                               href={this.state.podcastUrl} target="_blank">
                                                 <i className="fa fa-users mr-5"/> Check it out
                                             </a>
                                         </div>

@@ -19,8 +19,10 @@ browser.storage.sync.get(['api_key']).then(response => {
 
 function _checkForAudio(apiKey, tab) {
     if (tab == null) return;
-
     const url = tab.url;
+
+    if (!url.startsWith('http')) return;
+
     if (url && !url.startsWith('http')) return;
     const query = `${process.env.REACT_APP_API_SERVER_URL}/urlprocess/validate?url=${url}`;
     const config = {

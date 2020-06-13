@@ -18,7 +18,8 @@
     "tabs",
     "storage",
     "webRequest",
-    "http://*.podnoms.com/"
+    "https://*.podnoms.local/",
+    "https://*.podnoms.com/"
   ],
   "icons": {
     "72": "img/icon-72x72.png",
