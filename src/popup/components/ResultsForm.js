@@ -74,9 +74,9 @@ class ResultsForm extends Component {
                 currentWindow: true
             }).then(tabs => {
                 const url = tabs[0].url;
-                if (!url.startsWith('http')){
+                if (!url.startsWith('http')) {
                     this.setState({view: 'missing'});
-                }else {
+                } else {
                     axios.get(`${parseQuery}${url}`, this.config).then(
                         response => {
                             if (response && response.status === 200) {

@@ -13,7 +13,7 @@ const PageMissing = () => {
                         <div className="text-muted">I could not find any audio on this page!</div>
                         <div className="pt-20">
                             <a className="btn btn-rounded btn-alt-info" href="#">
-                                <i className="fa fas fa-envelope-open-text mr-5"/> Submit URL for checking
+                                <i className="fa fas fa-search-plus mr-5"></i> Submit URL for checking
                             </a>
                         </div>
                     </div>
