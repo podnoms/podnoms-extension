@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import PageBody from '../shared/PageBody';
 import * as browser from 'webextension-polyfill';
 import PageHeader from '../shared/PageHeader';
@@ -7,15 +6,10 @@ import PageFooterActions from '../shared/PageFooterActions';
 import PageFooter from '../shared/PageFooter';
 import PageMissing from '../shared/PageMissing';
 import PageActivity from '../shared/PageActivity';
+import PageInvalidUrl from "../shared/PageInvalidUrl";
 import PageAuthExpired from "../shared/PageAuthExpired";
 
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
-
-const parseQuery = `${process.env.REACT_APP_API_SERVER_URL}/urlprocess/validate?url=`;
-const podcastListQuery = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/podcasts`;
-const podcastAdd = `${process.env.REACT_APP_API_SERVER_URL}/entry`;
-
+import {cancelAllRequests, addEntry, getPodcasts, parsePage} from '../../services/apiService';
 
 class ResultsForm extends Component {
     config = {}
@@ -31,13 +25,6 @@ class ResultsForm extends Component {
 
     constructor(props) {
         super(props);
-        this.config = {
-            headers: {
-                'X-Api-Key': this.props.apiKey,
-                'Content-Type': 'application/json'
-            },
-            cancelToken: source.token
-        };
     }
 
     setStateToSuccess = (slug) => {
@@ -54,17 +41,7 @@ class ResultsForm extends Component {
             sourceUrl: url,
             title: this.state.entryTitle
         };
-        axios.post(podcastAdd, JSON.stringify(entry), this.config)
-            .then((response) => {
-                    if (
-                        response &&
-                        response.status === 200
-                    ) {
-                        console.log('Setting state', this);
-                        this.setStateToSuccess(response.data.podcastSlug);
-                    }
-                }
-            );
+        addEntry(entry).then((slug) => this.setStateToSuccess(slug));
     }
 
     componentDidMount() {
@@ -77,43 +54,35 @@ class ResultsForm extends Component {
                 if (!url.startsWith('http')) {
                     this.setState({view: 'missing'});
                 } else {
-                    axios.get(`${parseQuery}${url}`, this.config).then(
-                        response => {
-                            if (response && response.status === 200) {
-                                this.setState({
-                                    links: response.data.links,
-                                    entryTitle: response.data.title,
-                                    view: response.data.links && response.data.links.length !== 0 ? 'parse' : 'missing'
-                                });
-                            }
-                        }, error => {
-                            if (error.response && error.response.status === 401) {
-                                this.setState({view: 'invalidauth'});
-                                // browser.storage.sync.remove('api_key')
-                                //     .then(r => this.state.view = 'invalidauth');
+                    parsePage(url)
+                        .then((result) => {
+                            console.log('Results are in');
+                            if (result.error) {
+                                if (result.error.response && result.error.response.status === 401) {
+                                    this.setState({view: 'invalidauth', url: result.url});
+                                    // browser.storage.sync.remove('api_key')
+                                    //     .then(r => this.state.view = 'invalidauth');
+                                } else {
+                                    this.setState({view: 'missing', url: result.url});
+                                }
                             } else {
-                                this.setState({view: 'missing'});
+                                if (result.links.length !== 0) {
+                                    getPodcasts()
+                                        .then(podcasts => this.setState({podcasts: podcasts, url: result.url}))
+                                }
+                                this.setState(result);
                             }
-                        }
-                    );
-                    axios.get(podcastListQuery, this.config).then(
-                        response => {
-                            if (
-                                response &&
-                                response.status === 200 &&
-                                response.data
-                            ) {
-                                this.setState({podcasts: response.data});
-                            }
-                        }
-                    );
+                        }, (result) => {
+                            console.log('Errors are in', result);
+                            this.setState({view: 'invalidauth', url: result.url});
+                        });
                 }
             }
         );
     }
 
     componentWillUnmount() {
-        source.cancel('Component unmounted');
+        // cancelAllRequests();
     }
 
     render() {
@@ -126,8 +95,10 @@ class ResultsForm extends Component {
                             return <PageActivity/>;
                         case ('invalidauth'):
                             return <PageAuthExpired/>;
+                        case ('invalidurl'):
+                            return <PageInvalidUrl/>;
                         case ('missing'):
-                            return <PageMissing/>;
+                            return <PageMissing url={this.state.url}/>;
                         case ('parse'):
                             return <PageBody links={this.state.links} podcasts={this.state.podcasts}
                                              selectedPodcastChanged={p => this.setState({podcastSlug: p})}
@@ -157,7 +128,6 @@ class ResultsForm extends Component {
                     <PageFooterActions addPodcast={() => this.addPodcast()}/> :
                     <PageFooter/>
                 }
-
             </div>
         );
     }
