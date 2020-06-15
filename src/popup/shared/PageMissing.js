@@ -4,6 +4,7 @@ import {flagPage} from '../../services/apiService';
 const PageMissing = (props) => {
     const [pageStatus, setPageStatus] = useState('info');
     const submitUrlForChecking = (url) => {
+        console.log('Submitting page');
         flagPage(url)
             .then((r) => setPageStatus('submitted'))
     }
@@ -19,10 +20,10 @@ const PageMissing = (props) => {
                         <div className="font-size-h4 font-w600">Bad news...</div>
                         <div className="text-muted">I could not find any audio on this page!</div>
                         <div className="pt-20">
-                            <a className="btn btn-rounded btn-alt-info" href="#"
-                               onClick={submitUrlForChecking(props.url)}>
+                            <button className="btn btn-rounded btn-alt-info"
+                               onClick={() => submitUrlForChecking(props.url)}>
                                 <i className="fa fas fa-search-plus mr-5"/> Submit URL for checking
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -40,6 +41,12 @@ const PageMissing = (props) => {
                         <div className="text-muted">
                             We received your request and
                             will get back to you as soon as we can!
+                        </div>
+                        <div className="pt-20">
+                            <button className="btn btn-rounded btn-alt-info"
+                                    onClick={() => window.close()}>
+                                <i className="fa fa-thumbs-up mr-5"/> Done
+                            </button>
                         </div>
                     </div>
                 </div>

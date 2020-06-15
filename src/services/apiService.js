@@ -6,6 +6,7 @@ const source = CancelToken.source();
 
 const PAGE_PARSE = `${process.env.REACT_APP_API_SERVER_URL}/urlprocess/validate?url=`;
 const PODCAST_LIST = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/podcasts`;
+const FLAG_PAGE = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/flagurl`;
 const ENTRY_ADD = `${process.env.REACT_APP_API_SERVER_URL}/entry`;
 
 export const cancelAllRequests = () => {
@@ -86,7 +87,7 @@ export const parsePage = (url) => {
                     if (response && response.status === 200) {
                         resolve({
                             url: url,
-                            links: response.data.links,
+                            links: response.data.links ?? [],
                             entryTitle: response.data.title,
                             view: response.data.links && response.data.links.length !== 0 ? 'parse' : 'missing'
                         });
@@ -133,7 +134,9 @@ export const flagPage = (url) => {
                     view: 'invalidauth'
                 });
             }
-            axios.post()
+            axios.post(`${FLAG_PAGE}?url=${url}`, {}, _getConfig(response.api_key)).then((response) => {
+                resolve({status: 'submitted'});
+            })
         });
     });
 }

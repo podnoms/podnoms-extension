@@ -10,7 +10,7 @@ const PageActivity = () => {
                     </div>
                     <div className="block-content block-content-full block-content-sm bg-body-light">
                         <div className="font-w600 mb-5">Checking this page for audio</div>
-                        <div className="font-size-sm text-muted">Back in a tick</div>
+                        <div className="font-size-sm text-muted">Please wait...</div>
                     </div>
                 </div>
             </div>
