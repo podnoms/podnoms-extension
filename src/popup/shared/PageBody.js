@@ -30,9 +30,9 @@ const PageBody = (props) => {
                         <td className="d-none d-sm-table-cell font-w600" style={{width: 140 + 'px'}}>{r.value}</td>
                         <td>
                             <audio controls>
-                                <source src={r.key}/>
+                                <source src={r.url}/>
                             </audio>
-                            <div className="text-muted mt-5">{r.value}</div>
+                            <div className="text-muted mt-5">{r.key}</div>
                         </td>
                         <td className="d-none d-xl-table-cell font-w600 font-size-sm text-muted"
                             style={{width: 120 + 'px'}}>{r.key}

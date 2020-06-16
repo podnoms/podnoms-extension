@@ -4,7 +4,7 @@ import * as browser from "webextension-polyfill";
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 
-const PAGE_PARSE = `${process.env.REACT_APP_API_SERVER_URL}/urlprocess/validate?url=`;
+const PAGE_PARSE = `${process.env.REACT_APP_SCRAPER_URL}/check-url?url=`;
 const PODCAST_LIST = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/podcasts`;
 const FLAG_PAGE = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/flagurl`;
 const ENTRY_ADD = `${process.env.REACT_APP_API_SERVER_URL}/entry`;
@@ -82,7 +82,7 @@ export const parsePage = (url) => {
                 });
             }
 
-            axios.get(`${PAGE_PARSE}${url}`, _getConfig(response.api_key)).then(
+            axios.get(`${PAGE_PARSE}${url}`).then(
                 response => {
                     if (response && response.status === 200) {
                         resolve({
@@ -122,6 +122,11 @@ export const getPodcasts = () => {
                     ) {
                         resolve(response.data);
                     }
+                }, (error) => {
+                    resolve({
+                        view: 'invalidauth',
+                        error: error
+                    });
                 });
         });
     });

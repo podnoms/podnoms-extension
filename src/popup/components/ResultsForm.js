@@ -54,27 +54,35 @@ class ResultsForm extends Component {
                 if (!url.startsWith('http')) {
                     this.setState({view: 'missing'});
                 } else {
-                    parsePage(url)
-                        .then((result) => {
-                            console.log('Results are in');
-                            if (result.error) {
-                                if (result.error.response && result.error.response.status === 401) {
-                                    this.setState({view: 'invalidauth', url: result.url});
-                                    // browser.storage.sync.remove('api_key')
-                                    //     .then(r => this.state.view = 'invalidauth');
-                                } else {
-                                    this.setState({view: 'missing', url: result.url});
-                                }
-                            } else {
-                                if (result.links.length !== 0) {
-                                    getPodcasts()
-                                        .then(podcasts => this.setState({podcasts: podcasts, url: result.url}))
-                                }
-                                this.setState(result);
+                    getPodcasts()
+                        .then(result => {
+                            if (result.error && result.view){
+                                this.setState({view: result.view})
                             }
-                        }, (result) => {
-                            console.log('Errors are in', result);
-                            this.setState({view: 'invalidauth', url: result.url});
+                            else {
+                                this.setState({podcasts: result, url: result.url})
+                                parsePage(url)
+                                    .then((result) => {
+                                        console.log('Results are in');
+                                        if (result.error) {
+                                            if (result.error.response && result.error.response.status === 401) {
+                                                this.setState({view: 'invalidauth', url: result.url});
+                                                // browser.storage.sync.remove('api_key')
+                                                //     .then(r => this.state.view = 'invalidauth');
+                                            } else {
+                                                this.setState({view: 'missing', url: result.url});
+                                            }
+                                        } else {
+                                            if (result.links.length !== 0) {
+
+                                            }
+                                            this.setState(result);
+                                        }
+                                    }, (result) => {
+                                        console.log('Errors are in', result);
+                                        this.setState({view: 'invalidauth', url: result.url});
+                                    });
+                            }
                         });
                 }
             }
