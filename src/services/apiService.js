@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as browser from 'webextension-polyfill';
 
+
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 
@@ -16,6 +17,10 @@ const DISALLOWED_HOSTS = [
     'podnoms.local',
     'localhost',
     'podnoms.com',
+    'dev.to',
+    'stackoverflow.com',
+    'github.com',
+    'google.com',
     'dev.pdnm.be'
 ];
 
@@ -25,7 +30,8 @@ function _validateUrl(url) {
         if (host.host) {
             return !DISALLOWED_HOSTS.includes(host.hostname.toLowerCase());
         }
-    } catch (e) {}
+    } catch (e) {
+    }
     return false;
 }
 
@@ -81,7 +87,7 @@ export const parsePage = url => {
                 });
             }
 
-            axios.post(`${PAGE_PARSE}`, { url: url }).then(
+            axios.post(`${PAGE_PARSE}`, {url: url}).then(
                 response => {
                     if (response && response.status === 200) {
                         resolve({
@@ -148,7 +154,7 @@ export const flagPage = url => {
                     _getConfig(response.api_key)
                 )
                 .then(response => {
-                    resolve({ status: 'submitted' });
+                    resolve({status: 'submitted'});
                 });
         });
     });

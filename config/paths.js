@@ -34,7 +34,7 @@ const getPublicUrl = appPackageJson =>
 function getServedPath(appPackageJson) {
     const publicUrl = getPublicUrl(appPackageJson);
     const servedUrl =
-    envPublicUrl || (publicUrl ? url.parse(publicUrl).pathname : '/');
+        envPublicUrl || (publicUrl ? url.parse(publicUrl).pathname : '/');
     return ensureSlash(servedUrl, true);
 }
 
@@ -49,7 +49,7 @@ const moduleFileExtensions = [
     'tsx',
     'json',
     'web.jsx',
-    'jsx',
+    'jsx'
 ];
 
 const resolveModule = (resolveFn, filePath) => {
@@ -89,9 +89,7 @@ module.exports = {
     proxySetup: resolveApp('src/setupProxy.js'),
     appNodeModules: resolveApp('node_modules'),
     publicUrl: getPublicUrl(resolveApp('package.json')),
-    servedPath: getServedPath(resolveApp('package.json')),
+    servedPath: getServedPath(resolveApp('package.json'))
 };
-
-
 
 module.exports.moduleFileExtensions = moduleFileExtensions;
