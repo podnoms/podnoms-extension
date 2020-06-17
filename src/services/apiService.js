@@ -1,22 +1,22 @@
 import axios from 'axios';
-import * as browser from "webextension-polyfill";
+import * as browser from 'webextension-polyfill';
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 
-const PAGE_PARSE = `${process.env.REACT_APP_SCRAPER_URL}/check-url?url=`;
+const PAGE_PARSE = `${process.env.REACT_APP_SCRAPER_URL}/check-url`;
 const PODCAST_LIST = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/podcasts`;
 const FLAG_PAGE = `${process.env.REACT_APP_API_SERVER_URL}/pub/browserextension/flagurl`;
 const ENTRY_ADD = `${process.env.REACT_APP_API_SERVER_URL}/entry`;
 
 export const cancelAllRequests = () => {
-    source.cancel("Cancelling request");
-}
+    source.cancel('Cancelling request');
+};
 const DISALLOWED_HOSTS = [
-    "podnoms.local",
-    "localhost",
-    "podnoms.com",
-    "dev.pdnm.be"
+    'podnoms.local',
+    'localhost',
+    'podnoms.com',
+    'dev.pdnm.be'
 ];
 
 function _validateUrl(url) {
@@ -25,10 +25,8 @@ function _validateUrl(url) {
         if (host.host) {
             return !DISALLOWED_HOSTS.includes(host.hostname.toLowerCase());
         }
-    } catch (e) {
-
-    }
-    return false
+    } catch (e) {}
+    return false;
 }
 
 function _getConfig(apiKey) {
@@ -38,11 +36,11 @@ function _getConfig(apiKey) {
             'Content-Type': 'application/json'
         },
         cancelToken: source.token
-    }
+    };
 }
 
-export const addEntry = (entry) => {
-    return new Promise((resolve) => {
+export const addEntry = entry => {
+    return new Promise(resolve => {
         browser.storage.sync.get(['api_key']).then(response => {
             if (!response.api_key) {
                 resolve({
@@ -50,22 +48,23 @@ export const addEntry = (entry) => {
                 });
             }
 
-            axios.post(ENTRY_ADD, JSON.stringify(entry), _getConfig(response.api_key))
-                .then((response) => {
-                        if (
-                            response &&
-                            response.status === 200
-                        ) {
-                            resolve(response.data.podcastSlug);
-                        }
+            axios
+                .post(
+                    ENTRY_ADD,
+                    JSON.stringify(entry),
+                    _getConfig(response.api_key)
+                )
+                .then(response => {
+                    if (response && response.status === 200) {
+                        resolve(response.data.podcastSlug);
                     }
-                );
+                });
         });
     });
-}
+};
 
-export const parsePage = (url) => {
-    return new Promise((resolve) => {
+export const parsePage = url => {
+    return new Promise(resolve => {
         if (!_validateUrl(url)) {
             resolve({
                 url: url,
@@ -82,17 +81,22 @@ export const parsePage = (url) => {
                 });
             }
 
-            axios.get(`${PAGE_PARSE}${url}`).then(
+            axios.post(`${PAGE_PARSE}`, { url: url }).then(
                 response => {
                     if (response && response.status === 200) {
                         resolve({
                             url: url,
-                            links: response.data.links ?? [],
+                            links: response.data.data.links ?? [],
                             entryTitle: response.data.title,
-                            view: response.data.links && response.data.links.length !== 0 ? 'parse' : 'missing'
+                            view:
+                                response.data.data.links &&
+                                response.data.data.links.length !== 0
+                                    ? 'parse'
+                                    : 'missing'
                         });
                     }
-                }, (error) => {
+                },
+                error => {
                     resolve({
                         url: url,
                         links: [],
@@ -103,10 +107,10 @@ export const parsePage = (url) => {
             );
         });
     });
-}
+};
 
 export const getPodcasts = () => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         browser.storage.sync.get(['api_key']).then(response => {
             if (!response.api_key) {
                 resolve({
@@ -115,33 +119,37 @@ export const getPodcasts = () => {
             }
             axios.get(PODCAST_LIST, _getConfig(response.api_key)).then(
                 response => {
-                    if (
-                        response &&
-                        response.status === 200 &&
-                        response.data
-                    ) {
+                    if (response && response.status === 200 && response.data) {
                         resolve(response.data);
                     }
-                }, (error) => {
+                },
+                error => {
                     resolve({
                         view: 'invalidauth',
                         error: error
                     });
-                });
+                }
+            );
         });
     });
-}
-export const flagPage = (url) => {
-    return new Promise((resolve) => {
+};
+export const flagPage = url => {
+    return new Promise(resolve => {
         browser.storage.sync.get(['api_key']).then(response => {
             if (!response.api_key) {
                 resolve({
                     view: 'invalidauth'
                 });
             }
-            axios.post(`${FLAG_PAGE}?url=${url}`, {}, _getConfig(response.api_key)).then((response) => {
-                resolve({status: 'submitted'});
-            })
+            axios
+                .post(
+                    `${FLAG_PAGE}?url=${url}`,
+                    {},
+                    _getConfig(response.api_key)
+                )
+                .then(response => {
+                    resolve({ status: 'submitted' });
+                });
         });
     });
-}
+};
