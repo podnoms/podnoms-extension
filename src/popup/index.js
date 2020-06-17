@@ -1,14 +1,9 @@
 import React from 'react';
-import './Popup.css';
-import ResultsForm from './components/ResultsForm';
-import SetupRequired from './components/SetupRequired';
+import ReactDOM from 'react-dom';
+import './index.css';
+import Popup from "./Popup";
+import * as browser from 'webextension-polyfill';
 
-const Index = (props) => {
-    return (
-        props.apiKey ?
-            <ResultsForm apiKey={props.apiKey}/> :
-            <SetupRequired/>
-    );
-};
-
-export default Index;
+browser.storage.sync.get(['api_key']).then(response => {
+    ReactDOM.render(<Popup apiKey={response.api_key}/>, document.getElementById('root'));
+});

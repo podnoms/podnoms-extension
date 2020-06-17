@@ -76,7 +76,7 @@ module.exports = function (webpackEnv) {
         mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
         bail: isEnvProduction, // stop compilation on the very first error itself
         devtool: isEnvProduction
-            ? shouldUseSourceMap ? 'source-map' : false
+            ? shouldUseSourceMap ? 'inline-source-map' : false
             : isEnvDevelopment && 'cheap-module-source-map',
         entry,
         output: {

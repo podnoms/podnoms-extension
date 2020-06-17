@@ -45,6 +45,7 @@ class ResultsForm extends Component {
     }
 
     componentDidMount() {
+        console.log('InResults');
         browser.tabs.query(
             {
                 active: true,

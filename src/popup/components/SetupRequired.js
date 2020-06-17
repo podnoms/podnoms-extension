@@ -3,6 +3,7 @@ import React from 'react';
 import PageFooter from '../shared/PageFooter';
 
 const SetupRequired = () => {
+    console.log('InSetup');
     return (
         <div className="container-fluid body-content">
             <div className="page-wrapper form-group row">
