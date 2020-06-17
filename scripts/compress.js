@@ -49,7 +49,7 @@ crx.load(buildDir)
     });
 
 console.log(`Building Edge zip from: ${buildDir}`);
-zl.archiveFolder(buildDir, `${outputDir}/${prefix}.zip`).then(() => {
+zl.archiveFolder(buildDir, `${outputDir}/${prefix}.zip`).then((r) => {
     console.log("Created versioned Edge extension");
     fs.copyFile(`${outputDir}/${prefix}.zip`, `${outputDir}/${base}.zip`, (err) => {
         if (err) throw err;
