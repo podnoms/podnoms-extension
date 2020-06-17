@@ -3,12 +3,12 @@ import './Popup.css';
 import ResultsForm from './components/ResultsForm';
 import SetupRequired from './components/SetupRequired';
 
-const Popup = (props) => {
+const Index = (props) => {
     return (
         props.apiKey ?
-            <ResultsForm apiKey={props.apiKey} /> :
-            <SetupRequired />
+            <ResultsForm apiKey={props.apiKey}/> :
+            <SetupRequired/>
     );
 };
 
-export default Popup;
+export default Index;

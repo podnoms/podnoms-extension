@@ -5,7 +5,7 @@ import {action} from '@storybook/addon-actions';
 import {linkTo} from '@storybook/addon-links';
 
 import {Button, Welcome} from '@storybook/react/demo';
-import Popup from '../src/popup/Popup';
+import Index from '../src/popup';
 import Sidebar from '../src/sidebar/Sidebar';
 import Options from '../src/options/Options';
 
@@ -21,6 +21,6 @@ storiesOf('Button', module)
         </Button>
     ));
 
-storiesOf('Popup', module).add('Default', () => <Popup/>);
+storiesOf('Index', module).add('Default', () => <Index/>);
 storiesOf('Sidebar', module).add('Default', () => <Sidebar/>);
 storiesOf('Options', module).add('Default', () => <Options/>);
