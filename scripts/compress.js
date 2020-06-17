@@ -48,9 +48,9 @@ crx.load(buildDir)
         console.error(err);
     });
 
-console.log(`Building Edge zip from: ${buildDir}`);
+console.log(`Building unsigned zip from: ${buildDir}`);
 zl.archiveFolder(buildDir, `${outputDir}/${prefix}.zip`).then((r) => {
-    console.log("Created versioned Edge extension");
+    console.log("Created versioned unsigned zip extension");
     fs.copyFile(`${outputDir}/${prefix}.zip`, `${outputDir}/${base}.zip`, (err) => {
         if (err) throw err;
         console.log(`${outputDir}/${prefix}.xpi was copied to base`);
