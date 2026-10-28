@@ -1,0 +1,73 @@
+# Publishes a version to the Chrome Web Store and Firefox Add-ons: push a tag
+# matching package.json's version (`git tag v0.2.0 && git push --tags`). It can
+# also be run by hand, as a dry run that only checks the stores' credentials.
+# The secrets and variables it needs are listed in the README.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Check the store credentials without uploading anything
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+
+      # The stores refuse a version they already have, so the tag has to match
+      # what's being built.
+      - name: Check the tag matches package.json
+        if: github.ref_type == 'tag'
+        run: |
+          version=$(jq -r .version package.json)
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match package.json's version ($version)"
+            exit 1
+          fi
+
+      - run: bun run compile
+      - run: bun run test
+      - run: bun run zip
+      - run: bun run zip:firefox
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extension-zips
+          path: .output/*.zip
+
+      - name: Submit to the stores
+        run: |
+          bunx wxt submit ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && '--dry-run' || '' }} \
+            --chrome-zip .output/*-chrome.zip \
+            --firefox-zip .output/*-firefox.zip \
+            --firefox-sources-zip .output/*-sources.zip
+        env:
+          CHROME_API_VERSION: v2
+          CHROME_EXTENSION_ID: ${{ vars.CHROME_EXTENSION_ID }}
+          CHROME_PUBLISHER_ID: ${{ vars.CHROME_PUBLISHER_ID }}
+          CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          CHROME_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.CHROME_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          FIREFOX_EXTENSION_ID: extension@podnoms.com
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
+
+      - name: Attach the builds to a GitHub release
+        if: github.ref_type == 'tag'
+        run: gh release create "$GITHUB_REF_NAME" .output/*.zip --title "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -1,0 +1,19 @@
+# Checks every push and pull request: types, tests, and that both browsers' builds work.
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run compile
+      - run: bun run test
+      - run: bun run build
+      - run: bun run build:firefox

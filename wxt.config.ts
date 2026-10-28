@@ -9,13 +9,12 @@ export default defineConfig({
   // What the dev build reloads itself from. Not 3000, which the PodNoms dev
   // proxy uses on this machine.
   dev: { server: { port: 3100 } },
-  manifest: {
+  manifest: ({ browser }) => ({
     name: 'PodNoms',
     description: 'Send audio and video from any page to your PodNoms shows.',
-    // storage: settings. scripting: looking at tabs opened before install.
-    // All sites: finding media on any page, and talking to whichever PodNoms
-    // server is configured (with the user's session cookie).
-    permissions: ['storage', 'scripting', 'activeTab'],
+    // storage: settings. All sites: finding media on any page, and talking to
+    // whichever PodNoms server is configured (with the user's session cookie).
+    permissions: ['storage'],
     host_permissions: ['<all_urls>'],
     // Dark until a page has something to send (see entrypoints/background.ts).
     action: {
@@ -34,5 +33,17 @@ export default defineConfig({
       96: '/icon/96.png',
       128: '/icon/128.png',
     },
-  },
+    // Firefox's add-on store knows the extension by this ID, so it can't change
+    // once published. What it sends PodNoms (the links and details of what the
+    // user chooses to send) is declared as the store requires.
+    ...(browser === 'firefox' && {
+      browser_specific_settings: {
+        gecko: {
+          id: 'extension@podnoms.com',
+          strict_min_version: '140.0',
+          data_collection_permissions: { required: ['websiteActivity', 'websiteContent'] },
+        },
+      },
+    }),
+  }),
 })

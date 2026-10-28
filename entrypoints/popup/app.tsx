@@ -25,20 +25,16 @@ const kindLabels: Record<MediaItem['kind'], string> = {
 }
 
 // What the active tab has, from its content script. Tabs opened before the
-// extension was installed don't have one yet, so it's added then.
+// extension was installed don't have one until they're reloaded, and the
+// browser's own pages never do.
 async function loadMedia(): Promise<{ items: MediaItem[]; tab: Browser.tabs.Tab }> {
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
   if (!tab?.id) throw new Error('No tab to look at')
-  const ask = () => browser.tabs.sendMessage(tab.id!, { type: 'get-media' } satisfies Message) as Promise<GetMediaResponse>
   try {
-    return { items: await ask(), tab }
+    const items = (await browser.tabs.sendMessage(tab.id, { type: 'get-media' } satisfies Message)) as GetMediaResponse
+    return { items, tab }
   } catch {
-    try {
-      await browser.scripting.executeScript({ target: { tabId: tab.id }, files: ['/content-scripts/content.js'] })
-      return { items: await ask(), tab }
-    } catch {
-      throw new Error("PodNoms can't look at this page")
-    }
+    throw new Error("PodNoms can't look at this page. If it was open before PodNoms was installed, reload it.")
   }
 }
 
