@@ -39,7 +39,7 @@ export default defineConfig({
     ...(browser === 'firefox' && {
       browser_specific_settings: {
         gecko: {
-          id: 'extension@podnoms.com',
+          id: '{2a6bcbb2-6ee5-46ef-8886-50a1af61be5d}',
           strict_min_version: '140.0',
           data_collection_permissions: { required: ['websiteActivity', 'websiteContent'] },
         },

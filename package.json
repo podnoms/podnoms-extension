@@ -2,7 +2,8 @@
   "name": "podnoms-extension",
   "description": "Send audio and video from any page to PodNoms",
   "private": true,
-  "version": "0.1.0",
+  "version": "4.0.1",
+  "license": "Apache-2.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
